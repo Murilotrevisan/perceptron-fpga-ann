@@ -25,6 +25,17 @@ PACKAGE fixed_package IS
     FUNCTION to_integer (arg_L : fixed) RETURN INTEGER;
     FUNCTION "+"(arg_L, arg_R : fixed) RETURN fixed;
     FUNCTION "-"(arg_L, arg_R : fixed) RETURN fixed;
+	--Aritmeticas
+	--"+"
+	FUNCTION "+"(arg_L: fixed, arg_R: integer) RETURN fixed;
+	FUNCTION "+"(arg_L: integer, arg_R: fixed) RETURN fixed;
+	--"-"
+	FUNCTION "-"(arg_L: fixed, arg_R: integer) RETURN fixed;
+	FUNCTION "-"(arg_L: integer, arg_R: fixed) RETURN fixed;
+    --"*"
+	FUNCTION "*"(arg_L, arg_R: fixed) RETURN fixed;
+	FUNCTION "*"(arg_L: fixed; arg_R: INTEGER) RETURN fixed;
+	FUNCTION "*"(arg_L: INTEGER; arg_R: fixed) RETURN fixed;
 
     
 END fixed_package;
@@ -167,6 +178,69 @@ PACKAGE BODY fixed_package IS
         	s := ADD_SUB_FIXED(arg_L, arg_R_comp, '1');
         	RETURN s;
     	END "-";
+
+		--------------------------------------------------------------------------
+
+    --Aritmeticas com conversão (AULA 9)
+    --"+"
+    FUNCTION "+"(arg_L : fixed; arg_R : INTEGER) RETURN fixed IS
+        VARIABLE arg_R_fixed, s : fixed(arg_L'RANGE);
+    BEGIN
+        arg_R_fixed := to_fixed(arg_R);
+        s := "+"(arg_L, arg_R_fixed);
+        RETURN s;
+    END "+";
+
+    FUNCTION "+"(arg_L : INTEGER; arg_R : fixed) RETURN fixed IS
+        VARIABLE arg_L_fixed, s : fixed(arg_R'RANGE);
+    BEGIN
+        arg_L_fixed := to_fixed(arg_L);
+        s := "+"(arg_L_fixed, arg_R);
+        RETURN s;
+    END "+";
+
+    --"-"
+    FUNCTION "-"(arg_L : fixed; arg_R : INTEGER) RETURN fixed IS
+        VARIABLE arg_R_fixed, s : fixed(arg_L'RANGE);
+    BEGIN
+        arg_R_fixed := to_fixed(arg_R);
+        s := "-"(arg_L, arg_R_fixed);
+        RETURN s;
+    END "-";
+
+    FUNCTION "-"(arg_L : INTEGER; arg_R : fixed) RETURN fixed IS
+        VARIABLE arg_L_fixed, s : fixed(arg_R'RANGE);
+    BEGIN
+        arg_L_fixed := to_fixed(arg_L);
+        s := "-"(arg_L_fixed, arg_R);
+        RETURN s;
+    END "-";
+	
+    --"*"
+    FUNCTION "*"(arg_L: fixed; arg_R: INTEGER) RETURN fixed IS
+		CONSTANT m: INTEGER := arg_L'LENGTH;
+		CONSTANT n: INTEGER := arg_L'LENGTH;
+		CONSTANT arg_R_real: REAL := REAL(arg_R);
+		VARIABLE res: fixed(arg_L'RANGE);
+		VARIABLE arg_R_fixed: fixed(arg_L'RANGE);
+    BEGIN
+		arg_R_fixed := to_fixed(arg_R_real,arg_L'HIGH,arg_L'LOW);
+		res := arg_L * arg_R_fixed;
+		RETURN res;
+	END "*";
+		
+	FUNCTION "*"(arg_L: INTEGER; arg_R: fixed) RETURN fixed IS
+		CONSTANT m: INTEGER := arg_R'LENGTH;
+		CONSTANT n: INTEGER := arg_R'LENGTH;
+		CONSTANT arg_L_real: REAL := REAL(arg_L);
+		VARIABLE res: fixed(arg_R'RANGE);
+		VARIABLE arg_L_fixed: fixed(arg_R'RANGE);
+	BEGIN
+		arg_L_fixed := to_fixed(arg_L_real,arg_R'HIGH,arg_R'LOW);
+		res := arg_L_fixed * arg_R;
+		RETURN res;
+	END "*";
+    --------------------------------------------------------------------
 
 END fixed_package;
 
